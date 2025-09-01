@@ -2,9 +2,9 @@ import streamlit as st
 from datetime import datetime
 import json
 
-# --------------------------------------
-# Configuración básica
-# --------------------------------------
+# -------------------------------
+# Config básica
+# -------------------------------
 st.set_page_config(page_title="AdoptAPP - Evaluación de Adoptantes", layout="centered")
 st.title("🐾 AdoptAPP")
 st.subheader("Sistema de preevaluación para solicitudes de adopción")
@@ -13,34 +13,50 @@ st.markdown(
     "y, si lo permites, enviaremos un **resumen** a la protectora."
 )
 
-# Leemos la URL del webhook desde los secrets (en Streamlit Cloud ya lo guardaste)
 WEBHOOK_URL = st.secrets.get("WEBHOOK_URL", None)
 PROTECTORA_EMAIL = st.secrets.get("PROTECTORA_EMAIL", None)  # opcional
 
-# --------------------------------------
-# Funciones auxiliares
-# --------------------------------------
-def clasificar_adoptante(edad, tiempo_libre, redes_seguridad, experiencia, tipo_vivienda):
+# -------------------------------
+# Funciones
+# -------------------------------
+def clasificar_adoptante(
+    edad, tiempo_libre, redes_seguridad, experiencia, tipo_vivienda, permiso_mascotas
+):
     """
     Devuelve (puntos, etiqueta, color)
     Reglas simples y transparentes.
     """
     puntos = 0
-    if edad >= 22: puntos += 1
-    if tiempo_libre == "2-5 horas":
-       puntos += 1
-    elif tiempo_libre == ">5 horas":
-       puntos += 2
-# "1-2 horas" no suma nada
-    if redes_seguridad == "Sí": puntos += 1
-    if experiencia == "Alta":
-       puntos += 2
-    elif experiencia == "Media":
-       puntos += 1
-# "Baja" suma 0
-    if tipo_vivienda in ["Piso", "Ático", "Casa/Chalet", "Vivienda Compartida"]: puntos += 1
-    if vives_alquiler == "Sí" and permiso_mascotas == "No": puntos -= 1
 
+    # Edad mínima razonable
+    if edad >= 22:
+        puntos += 1
+
+    # Tiempo disponible (nuevas opciones: "1-2 horas", "2-5 horas", ">5 horas")
+    if tiempo_libre == "2-5 horas":
+        puntos += 1
+    elif tiempo_libre == ">5 horas":
+        puntos += 2
+
+    # Seguridad
+    if redes_seguridad == "Sí":
+        puntos += 1
+
+    # Experiencia Baja/Media/Alta
+    if experiencia == "Media":
+        puntos += 1
+    elif experiencia == "Alta":
+        puntos += 2
+
+    # Tipo de vivienda
+    if tipo_vivienda in ["Casa", "Ático", "Casa/Chalet"]:
+        puntos += 1
+
+    # Alquiler sin permiso (penaliza)
+    if permiso_mascotas == "No":
+        puntos -= 1
+
+    # Etiqueta final
     if puntos >= 4:
         return puntos, "APTO", "success"
     elif puntos >= 2:
@@ -48,8 +64,8 @@ def clasificar_adoptante(edad, tiempo_libre, redes_seguridad, experiencia, tipo_
     else:
         return puntos, "NO APTO", "error"
 
+
 def enviar_resumen_por_webhook(payload: dict, webhook_url: str):
-    """Envía el resumen al webhook (Zapier/Make). Devuelve (ok, mensaje)."""
     if not webhook_url:
         return False, "No hay WEBHOOK_URL configurado (no se envía)."
     try:
@@ -68,9 +84,9 @@ def enviar_resumen_por_webhook(payload: dict, webhook_url: str):
     except Exception as e:
         return False, f"No se pudo enviar: {e}"
 
-# --------------------------------------
+# -------------------------------
 # Formulario
-# --------------------------------------
+# -------------------------------
 with st.form("adoption_form"):
     nombre = st.text_input("👤 Nombre completo del adoptante")
     telefono = st.text_input("📱 Teléfono de contacto (móvil)")
@@ -81,20 +97,24 @@ with st.form("adoption_form"):
     ubicacion = st.text_input("Ciudad / Provincia")
     tipo_vivienda = st.selectbox("Tipo de vivienda", ["Piso", "Casa", "Ático", "Otro"])
 
+    # Una sola pregunta para alquiler/permiso
     permiso_mascotas = st.radio(
         "🏠 ¿Vives de alquiler y tienes permiso para tener mascotas?",
         ["Sí", "No", "No aplica (vivienda propia)"]
     )
-    
+
+    # NUEVAS opciones de tiempo libre
     tiempo_libre = st.selectbox(
-    "¿Cuánto tiempo tienes al día para el animal?",
-    ["1-2 horas", "2-5 horas", ">5 horas"]
+        "¿Cuánto tiempo tienes al día para el animal?",
+        ["1-2 horas", "2-5 horas", ">5 horas"]
     )
-    
+
     redes_seguridad = st.radio(
         "¿Estás dispuesto/a a instalar redes de seguridad en ventanas/balcones?",
-        ["Sí", "No", "No aplica"]
+        ["Sí", "No", "No aplica (no tengo gatos)"]
     )
+
+    # Experiencia Baja/Media/Alta
     experiencia = st.selectbox(
         "¿Cuál es tu experiencia con animales de compañía?",
         ["Baja", "Media", "Alta"]
@@ -105,15 +125,15 @@ with st.form("adoption_form"):
         value=True
     )
 
-    # 👉 Botón obligatorio
     submit = st.form_submit_button("Enviar solicitud")
 
-# --------------------------------------
+# -------------------------------
 # Resultado y envío
-# --------------------------------------
+# -------------------------------
 if submit:
-    # 1) Clasificación
-    puntos, etiqueta, color = clasificar_adoptante(edad, tiempo_libre, redes_seguridad, experiencia, tipo_vivienda)
+    puntos, etiqueta, color = clasificar_adoptante(
+        edad, tiempo_libre, redes_seguridad, experiencia, tipo_vivienda, permiso_mascotas
+    )
 
     st.markdown("### 🧠 Evaluación del sistema:")
     if color == "success":
@@ -123,32 +143,28 @@ if submit:
     else:
         st.error("❌ Perfil con bajo encaje inicial. Se recomienda revisar motivaciones y condiciones.")
 
-    # 2) Resumen claro (lo ve la persona y se puede enviar)
     resumen = {
-    "timestamp": datetime.utcnow().isoformat() + "Z",
-    "etiqueta": etiqueta,
-    "puntos": puntos,
-    "nombre": nombre,
-    "telefono": telefono,
-    "nombre_animal": nombre_animal,
-    "edad": edad,
-    "genero": genero,
-    "ubicacion": ubicacion,
-    "tipo_vivienda": tipo_vivienda,
-    "vives_alquiler": vives_alquiler,
-    "permiso_mascotas": permiso_mascotas,
-    "tiempo_libre": tiempo_libre,
-    "redes_seguridad": redes_seguridad,
-    "experiencia": experiencia,
-    "destinatario_protectora": PROTECTORA_EMAIL,
-    "origen": "AdoptAPP (Streamlit)"
-
-}
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "etiqueta": etiqueta,
+        "puntos": puntos,
+        "nombre": nombre,
+        "telefono": telefono,
+        "nombre_animal": nombre_animal,
+        "edad": edad,
+        "genero": genero,
+        "ubicacion": ubicacion,
+        "tipo_vivienda": tipo_vivienda,
+        "permiso_mascotas": permiso_mascotas,
+        "tiempo_libre": tiempo_libre,
+        "redes_seguridad": redes_seguridad,
+        "experiencia": experiencia,
+        "destinatario_protectora": PROTECTORA_EMAIL,
+        "origen": "AdoptAPP (Streamlit)"
+    }
 
     st.markdown("### 📨 Resumen para la protectora")
     st.json(resumen)
 
-    # 3) Envío por webhook (si hay consentimiento y está configurado)
     if consent:
         ok, msg = enviar_resumen_por_webhook(resumen, WEBHOOK_URL)
         if ok:
