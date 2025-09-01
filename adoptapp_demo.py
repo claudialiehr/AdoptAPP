@@ -5,12 +5,11 @@ import json
 # -------------------------------
 # Config básica
 # -------------------------------
-st.set_page_config(page_title="AdoptAPP - Evaluación de Adoptantes", layout="centered")
+st.set_page_config(page_title="AdoptAPP - ¡Adopta no compres!", layout="centered")
 st.title("🐾 AdoptAPP")
-st.subheader("Sistema de preevaluación para solicitudes de adopción")
+st.subheader("Cuestionario de preevaluación")
 st.markdown(
-    "Completa el formulario. El sistema mostrará una evaluación preliminar "
-    "y, si lo permites, enviaremos tu solicitud a la protectora."
+    "Completa el formulario. Revisaremos tu solicitud a la mayor brevedad."
 )
 
 # Secrets (en Cloud) – si no existe, queda en None y no enviará nada
@@ -97,13 +96,13 @@ with st.form("adoption_form"):
     # Datos básicos
     nombre = st.text_input("👤 Nombre completo del adoptante")
     telefono = st.text_input("📱 Teléfono de contacto (móvil)")
-    nombre_animal = st.text_input("🐶 Nombre del animal que quieres adoptar")
+    nombre_animal = st.text_input("🐶😺 Nombre del animal que quieres adoptar")
 
     # Perfil
     edad = st.slider("Edad", 18, 80, 30)
-    genero = st.selectbox("Género", ["Mujer", "Hombre", "Otro"])
+    genero = st.selectbox("Género", ["Mujer", "Hombre", "No me representa"])
     ubicacion = st.text_input("Ciudad / Provincia")
-    tipo_vivienda = st.selectbox("Tipo de vivienda", ["Piso", "Casa", "Ático", "Otro"])
+    tipo_vivienda = st.selectbox("Tipo de vivienda", ["Piso", "Casa", "Ático", "Vivienda Compartida"])
 
     # Alquiler/permiso (una sola pregunta)
     permiso_mascotas = st.radio(
@@ -111,7 +110,7 @@ with st.form("adoption_form"):
         ["Sí", "No", "No aplica (vivienda propia)"]
     )
 
-    # Tiempo disponible (nuevas opciones)
+    # Tiempo disponible 
     tiempo_libre = st.selectbox(
         "¿Cuánto tiempo tienes al día para el animal?",
         ["1-2 horas", "2-5 horas", ">5 horas"]
@@ -119,8 +118,8 @@ with st.form("adoption_form"):
 
     # Seguridad y experiencia
     redes_seguridad = st.radio(
-        "¿Estás dispuesto/a a instalar redes de seguridad en ventanas/balcones?",
-        ["Sí", "No", "No aplica (no tengo gatos)"]
+        "¿Estás dispuesto/a a instalar redes de seguridad en ventanas/balcones para el gato?",
+        ["Sí", "No", "No aplica"]
     )
     experiencia = st.selectbox(
         "¿Cuál es tu experiencia con animales de compañía?",
