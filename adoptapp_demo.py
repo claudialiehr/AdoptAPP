@@ -77,11 +77,10 @@ with st.form("adoption_form"):
     ubicacion = st.text_input("Ciudad / Provincia")
     tipo_vivienda = st.selectbox("Tipo de vivienda", ["Piso", "Casa", "Ático", "Otro"])
 
-    vives_alquiler = st.radio(
-        "🏠 ¿Vives de alquiler?",
-        ["Sí", "No"],
-        key="vives_alquiler"
-    )
+    permiso_mascotas = st.radio(
+    "🏠 ¿Vives de alquiler y tienes permiso para tener mascotas?",
+    ["Sí", "No", "No aplica (vivienda propia)"]
+)
 
     permiso_mascotas = None
     if vives_alquiler == "Sí":
