@@ -93,7 +93,7 @@ with st.form("adoption_form"):
     
     redes_seguridad = st.radio(
         "¿Estás dispuesto/a a instalar redes de seguridad en ventanas/balcones?",
-        ["Sí", "No", "No aplica (no tengo gatos)"]
+        ["Sí", "No", "No aplica"]
     )
     experiencia = st.selectbox(
         "¿Cuál es tu experiencia con animales de compañía?",
