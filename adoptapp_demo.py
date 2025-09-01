@@ -23,17 +23,23 @@ PROTECTORA_EMAIL = st.secrets.get("PROTECTORA_EMAIL", None)  # opcional
 def clasificar_adoptante(
     edad, tiempo_libre, redes_seguridad, experiencia, tipo_vivienda, permiso_mascotas
 ):
-    """
-    Devuelve (puntos, etiqueta, color)
-    Reglas simples y transparentes.
-    """
+    # 🚫 Regla descalificadora (hard stop)
+    if permiso_mascotas == "No":
+        return -1, "NO APTO", "error"
+
     puntos = 0
 
-    # Edad mínima razonable
-    if edad >= 22:
+    # Edad (tramos pedidos)
+    if edad < 25:
         puntos += 1
+    elif 25 <= edad <= 44:
+        puntos += 2
+    elif 45 <= edad <= 60:
+        puntos += 1
+    else:  # > 60
+        puntos -= 1
 
-    # Tiempo disponible (opciones: "1-2 horas", "2-5 horas", ">5 horas")
+    # Tiempo disponible
     if tiempo_libre == "2-5 horas":
         puntos += 1
     elif tiempo_libre == ">5 horas":
@@ -41,26 +47,24 @@ def clasificar_adoptante(
 
     # Seguridad
     if redes_seguridad == "Sí":
-        puntos += 1
+        puntos += 2
 
-    # Experiencia Baja/Media/Alta
+    # Experiencia
     if experiencia == "Media":
         puntos += 1
     elif experiencia == "Alta":
         puntos += 2
 
-    # Tipo de vivienda
-    if tipo_vivienda in ["Casa", "Ático", "Casa/Chalet"]:
+    # Vivienda
+    if tipo_vivienda in ["Piso", "Casa/Chalet", "Casa"]:
+        puntos += 2
+    elif tipo_vivienda == "Ático":
         puntos += 1
 
-    # Alquiler sin permiso (penaliza)
-    if permiso_mascotas == "No":
-        puntos -= 1
-
-    # Etiqueta final
-    if puntos >= 4:
+    # Umbrales
+    if puntos >= 7:
         return puntos, "APTO", "success"
-    elif puntos >= 2:
+    elif 4 <= puntos <= 6:
         return puntos, "INTERMEDIO", "warning"
     else:
         return puntos, "NO APTO", "error"
