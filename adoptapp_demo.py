@@ -96,7 +96,7 @@ with st.form("adoption_form"):
 
     tiempo_libre = st.selectbox(
         "¿Cuánto tiempo tienes al día para el animal?",
-        ["<1 hora", "1-3 horas", "3-5 horas", ">5 horas"]
+        ["1-2 horas", "2-5 horas", ">5 horas"]
     )
     redes_seguridad = st.radio(
         "¿Estás dispuesto/a a instalar redes de seguridad en ventanas/balcones?",
