@@ -174,5 +174,14 @@ if submit:
     else:
         st.info("No se enviará el resumen porque no diste consentimiento.")
 
-    st.markdown("---")
-    st.markdown("📝 **Nota:** Esta evaluación es preliminar y no sustituye el criterio del personal de la protectora.")
+    # st.markdown("---")
+    # st.markdown("📝 **Nota:** Esta evaluación es preliminar y no sustituye el criterio del personal de la protectora.")
+
+if consent:
+    ok, msg = enviar_resumen_por_webhook(resumen, WEBHOOK_URL)
+    if ok:
+        st.success("✅ Tu solicitud se ha enviado correctamente a la protectora.")
+    else:
+        st.error("⚠️ No se pudo enviar automáticamente. Por favor, inténtalo de nuevo más tarde.")
+else:
+    st.info("ℹ️ No se enviará la solicitud porque no diste consentimiento.")
