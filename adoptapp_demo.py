@@ -10,9 +10,10 @@ st.title("🐾 AdoptAPP")
 st.subheader("Sistema de preevaluación para solicitudes de adopción")
 st.markdown(
     "Completa el formulario. El sistema mostrará una evaluación preliminar "
-    "y, si lo permites, enviaremos un **resumen** a la protectora."
+    "y, si lo permites, enviaremos tu solicitud a la protectora."
 )
 
+# Secrets (en Cloud) – si no existe, queda en None y no enviará nada
 WEBHOOK_URL = st.secrets.get("WEBHOOK_URL", None)
 PROTECTORA_EMAIL = st.secrets.get("PROTECTORA_EMAIL", None)  # opcional
 
@@ -32,7 +33,7 @@ def clasificar_adoptante(
     if edad >= 22:
         puntos += 1
 
-    # Tiempo disponible (nuevas opciones: "1-2 horas", "2-5 horas", ">5 horas")
+    # Tiempo disponible (opciones: "1-2 horas", "2-5 horas", ">5 horas")
     if tiempo_libre == "2-5 horas":
         puntos += 1
     elif tiempo_libre == ">5 horas":
@@ -66,6 +67,7 @@ def clasificar_adoptante(
 
 
 def enviar_resumen_por_webhook(payload: dict, webhook_url: str):
+    """Envía el resumen al webhook (Zapier/Make). Devuelve (ok, mensaje)."""
     if not webhook_url:
         return False, "No hay WEBHOOK_URL configurado (no se envía)."
     try:
@@ -88,43 +90,46 @@ def enviar_resumen_por_webhook(payload: dict, webhook_url: str):
 # Formulario
 # -------------------------------
 with st.form("adoption_form"):
+    # Datos básicos
     nombre = st.text_input("👤 Nombre completo del adoptante")
     telefono = st.text_input("📱 Teléfono de contacto (móvil)")
     nombre_animal = st.text_input("🐶 Nombre del animal que quieres adoptar")
 
+    # Perfil
     edad = st.slider("Edad", 18, 80, 30)
     genero = st.selectbox("Género", ["Mujer", "Hombre", "Otro"])
     ubicacion = st.text_input("Ciudad / Provincia")
     tipo_vivienda = st.selectbox("Tipo de vivienda", ["Piso", "Casa", "Ático", "Otro"])
 
-    # Una sola pregunta para alquiler/permiso
+    # Alquiler/permiso (una sola pregunta)
     permiso_mascotas = st.radio(
         "🏠 ¿Vives de alquiler y tienes permiso para tener mascotas?",
         ["Sí", "No", "No aplica (vivienda propia)"]
     )
 
-    # NUEVAS opciones de tiempo libre
+    # Tiempo disponible (nuevas opciones)
     tiempo_libre = st.selectbox(
         "¿Cuánto tiempo tienes al día para el animal?",
         ["1-2 horas", "2-5 horas", ">5 horas"]
     )
 
+    # Seguridad y experiencia
     redes_seguridad = st.radio(
         "¿Estás dispuesto/a a instalar redes de seguridad en ventanas/balcones?",
         ["Sí", "No", "No aplica (no tengo gatos)"]
     )
-
-    # Experiencia Baja/Media/Alta
     experiencia = st.selectbox(
         "¿Cuál es tu experiencia con animales de compañía?",
         ["Baja", "Media", "Alta"]
     )
 
+    # Consentimiento de envío a protectora
     consent = st.checkbox(
         "Autorizo a enviar mi solicitud a la protectora para su evaluación",
         value=True
     )
 
+    # Botón de envío
     submit = st.form_submit_button("Enviar solicitud")
 
 # -------------------------------
@@ -143,6 +148,7 @@ if submit:
     else:
         st.error("❌ Perfil con bajo encaje inicial. Se recomienda revisar motivaciones y condiciones.")
 
+    # Construimos el payload (no se muestra al usuario)
     resumen = {
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "etiqueta": etiqueta,
@@ -162,26 +168,15 @@ if submit:
         "origen": "AdoptAPP (Streamlit)"
     }
 
-    st.markdown("### 📨 Resumen para la protectora")
-    st.json(resumen)
-
+    # Envío silencioso (solo mostramos confirmación/errores)
     if consent:
         ok, msg = enviar_resumen_por_webhook(resumen, WEBHOOK_URL)
         if ok:
-            st.info("Resumen enviado a la protectora. " + msg)
+            st.success("✅ Tu solicitud se ha enviado correctamente a la protectora.")
         else:
-            st.info("No se pudo enviar automáticamente. " + msg + " (Puedes copiar el resumen manualmente).")
+            st.error("⚠️ No se pudo enviar automáticamente. Por favor, inténtalo de nuevo más tarde.")
     else:
-        st.info("No se enviará el resumen porque no diste consentimiento.")
+        st.info("ℹ️ No se enviará la solicitud porque no diste consentimiento.")
 
-    # st.markdown("---")
-    # st.markdown("📝 **Nota:** Esta evaluación es preliminar y no sustituye el criterio del personal de la protectora.")
-
-if consent:
-    ok, msg = enviar_resumen_por_webhook(resumen, WEBHOOK_URL)
-    if ok:
-        st.success("✅ Tu solicitud se ha enviado correctamente a la protectora.")
-    else:
-        st.error("⚠️ No se pudo enviar automáticamente. Por favor, inténtalo de nuevo más tarde.")
-else:
-    st.info("ℹ️ No se enviará la solicitud porque no diste consentimiento.")
+    st.markdown("---")
+    st.markdown("📝 **Nota:** Esta evaluación es preliminar y no sustituye el criterio del personal de la protectora.")
