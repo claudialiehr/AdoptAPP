@@ -63,17 +63,28 @@ def enviar_resumen_por_webhook(payload: dict, webhook_url: str):
 # Formulario
 # --------------------------------------
 with st.form("adoption_form"):
-    nombre = st.text_input("Nombre completo")
+    nombre = st.text_input("👤 Nombre completo del adoptante")
+    telefono = st.text_input("📱 Teléfono de contacto (móvil)")
+    nombre_animal = st.text_input("🐶 Nombre del animal que quieres adoptar")
+
     edad = st.slider("Edad", 18, 80, 30)
     genero = st.selectbox("Género", ["Mujer", "Hombre", "Otro"])
     ubicacion = st.text_input("Ciudad / Provincia")
     tipo_vivienda = st.selectbox("Tipo de vivienda", ["Piso", "Casa", "Ático", "Otro"])
-    tiempo_libre = st.selectbox("¿Cuánto tiempo tienes al día para el animal?", ["<1 hora", "1-3 horas", "3-5 horas", ">5 horas"])
-    redes_seguridad = st.radio("¿Estás dispuesto/a a instalar redes de seguridad en ventanas/balcones?", ["Sí", "No", "No aplica (no tengo gatos)"])
+    tiempo_libre = st.selectbox(
+        "¿Cuánto tiempo tienes al día para el animal?",
+        ["<1 hora", "1-3 horas", "3-5 horas", ">5 horas"]
+    )
+    redes_seguridad = st.radio(
+        "¿Estás dispuesto/a a instalar redes de seguridad en ventanas/balcones?",
+        ["Sí", "No", "No aplica (no tengo gatos)"]
+    )
     experiencia = st.radio("¿Has tenido animales anteriormente?", ["Sí", "No"])
 
     # Permiso explícito para enviar a la protectora
-    consent = st.checkbox("Autorizo a enviar mi solicitud a la protectora para su evaluación", value=True)
+    consent = st.checkbox(
+        "Autorizo a enviar mi solicitud a la protectora para su evaluación", value=True
+    )
 
     submit = st.form_submit_button("Enviar solicitud")
 
@@ -94,20 +105,22 @@ if submit:
 
     # 2) Resumen claro (lo ve la persona y se puede enviar)
     resumen = {
-        "timestamp": datetime.utcnow().isoformat() + "Z",
-        "etiqueta": etiqueta,
-        "puntos": puntos,
-        "nombre": nombre,
-        "edad": edad,
-        "genero": genero,
-        "ubicacion": ubicacion,
-        "tipo_vivienda": tipo_vivienda,
-        "tiempo_libre": tiempo_libre,
-        "redes_seguridad": redes_seguridad,
-        "experiencia": experiencia,
-        "destinatario_protectora": PROTECTORA_EMAIL,
-        "origen": "AdoptAPP (Streamlit)"
-    }
+    "timestamp": datetime.utcnow().isoformat() + "Z",
+    "etiqueta": etiqueta,
+    "puntos": puntos,
+    "nombre": nombre,
+    "telefono": telefono,
+    "nombre_animal": nombre_animal,
+    "edad": edad,
+    "genero": genero,
+    "ubicacion": ubicacion,
+    "tipo_vivienda": tipo_vivienda,
+    "tiempo_libre": tiempo_libre,
+    "redes_seguridad": redes_seguridad,
+    "experiencia": experiencia,
+    "destinatario_protectora": PROTECTORA_EMAIL,
+    "origen": "AdoptAPP (Streamlit)"
+}
 
     st.markdown("### 📨 Resumen para la protectora")
     st.json(resumen)
