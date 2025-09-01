@@ -70,7 +70,7 @@ with st.form("adoption_form"):
     edad = st.slider("Edad", 18, 80, 30)
     genero = st.selectbox("Género", ["Mujer", "Hombre", "Otro"])
     ubicacion = st.text_input("Ciudad / Provincia")
-    tipo_vivienda = st.selectbox("Tipo de vivienda", ["Piso", "Casa", "Ático", "Otro"])
+    tipo_vivienda = st.selectbox("Tipo de vivienda", ["Piso", "Casa", "Vivienda compartida"])
     tiempo_libre = st.selectbox(
         "¿Cuánto tiempo tienes al día para el animal?",
         ["<1 hora", "1-3 horas", "3-5 horas", ">5 horas"]
