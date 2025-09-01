@@ -78,24 +78,13 @@ with st.form("adoption_form"):
     tipo_vivienda = st.selectbox("Tipo de vivienda", ["Piso", "Casa", "Ático", "Otro"])
 
     permiso_mascotas = st.radio(
-    "🏠 ¿Vives de alquiler y tienes permiso para tener mascotas?",
-    ["Sí", "No", "No aplica (vivienda propia)"]
-)
-
-    permiso_mascotas = None
-    if vives_alquiler == "Sí":
-        permiso_mascotas = st.radio(
-            "¿Tienes permiso para tener mascotas del/de la caser@?",
-            ["Sí", "No"],
-            key="permiso_mascotas"
-        )
-    else:
-        if "permiso_mascotas" in st.session_state:
-            del st.session_state["permiso_mascotas"]
+        "🏠 ¿Vives de alquiler y tienes permiso para tener mascotas?",
+        ["Sí", "No", "No aplica (vivienda propia)"]
+    )
 
     tiempo_libre = st.selectbox(
         "¿Cuánto tiempo tienes al día para el animal?",
-        ["1-2 horas", "2-5 horas", ">5 horas"]
+        ["<1 hora", "1-3 horas", "3-5 horas", ">5 horas"]
     )
     redes_seguridad = st.radio(
         "¿Estás dispuesto/a a instalar redes de seguridad en ventanas/balcones?",
@@ -111,7 +100,7 @@ with st.form("adoption_form"):
         value=True
     )
 
-    # 👉 ESTE BOTÓN ES IMPRESCINDIBLE
+    # 👉 Botón obligatorio
     submit = st.form_submit_button("Enviar solicitud")
 
 # --------------------------------------
