@@ -27,7 +27,11 @@ def clasificar_adoptante(edad, tiempo_libre, redes_seguridad, experiencia, tipo_
     """
     puntos = 0
     if edad >= 22: puntos += 1
-    if tiempo_libre in ["2-5 horas", ">5 horas"]: puntos += 1
+    if tiempo_libre == "2-5 horas":
+       puntos += 1
+    elif tiempo_libre == ">5 horas":
+       puntos += 2
+# "1-2 horas" no suma nada
     if redes_seguridad == "Sí": puntos += 1
     if experiencia == "Alta":
        puntos += 2
@@ -81,11 +85,12 @@ with st.form("adoption_form"):
         "🏠 ¿Vives de alquiler y tienes permiso para tener mascotas?",
         ["Sí", "No", "No aplica (vivienda propia)"]
     )
-
+    
     tiempo_libre = st.selectbox(
-        "¿Cuánto tiempo tienes al día para el animal?",
-        ["<1 hora", "1-3 horas", "3-5 horas", ">5 horas"]
+    "¿Cuánto tiempo tienes al día para el animal?",
+    ["1-2 horas", "2-5 horas", ">5 horas"]
     )
+    
     redes_seguridad = st.radio(
         "¿Estás dispuesto/a a instalar redes de seguridad en ventanas/balcones?",
         ["Sí", "No", "No aplica (no tengo gatos)"]
