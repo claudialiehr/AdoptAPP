@@ -129,7 +129,7 @@ with st.form("adoption_form"):
     # Consentimiento de envío a protectora
     consent = st.checkbox(
         "Autorizo a enviar mi solicitud a la protectora para su evaluación",
-        value=True
+        value=False
     )
 
     # Botón de envío
@@ -183,3 +183,17 @@ if submit:
 
     st.markdown("---")
     st.markdown("📝 **Nota:** Esta evaluación es preliminar y no sustituye el criterio del personal de la protectora.")
+
+st.caption("Al enviar, confirmas que la información facilitada es veraz. El envío a la protectora solo se realizará si otorgas tu consentimiento.")
+
+with st.expander("ℹ️ Información sobre protección de datos (RGPD)"):
+    st.markdown("""
+**Responsable:** [Nombre de la protectora]  
+**Finalidad:** Gestionar la preevaluación de solicitudes de adopción.  
+**Base jurídica:** Consentimiento de la persona interesada (art. 6.1.a RGPD).  
+**Destinatarios:** La protectora indicada; no se realizan cesiones a terceros salvo obligación legal.  
+**Conservación:** Durante el tiempo necesario para la tramitación de la solicitud y los plazos legales aplicables.  
+**Derechos:** Acceso, rectificación, supresión, oposición, limitación y portabilidad.  
+**Contacto:** [email de la protectora]  
+**Información adicional:** No recopilamos tu IP ni datos de navegación en este formulario más allá de lo estrictamente necesario para el envío.
+""")
