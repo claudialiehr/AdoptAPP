@@ -35,6 +35,7 @@ def clasificar_adoptante(edad, tiempo_libre, redes_seguridad, experiencia, tipo_
        puntos += 1
 # "Baja" suma 0
     if tipo_vivienda in ["Piso", "Ático", "Casa/Chalet", "Vivienda Compartida"]: puntos += 1
+    if vives_alquiler == "Sí" and permiso_mascotas == "No": puntos -= 1
 
     if puntos >= 4:
         return puntos, "APTO", "success"
@@ -76,6 +77,7 @@ with st.form("adoption_form"):
     ubicacion = st.text_input("Ciudad / Provincia")
     tipo_vivienda = st.selectbox("Tipo de vivienda", ["Piso", "Casa", "Ático", "Otro"])
 
+    # ❓ Pregunta condicional
     vives_alquiler = st.radio("🏠 ¿Vives de alquiler?", ["Sí", "No"])
     permiso_mascotas = None
     if vives_alquiler == "Sí":
@@ -97,13 +99,11 @@ with st.form("adoption_form"):
         ["Baja", "Media", "Alta"]
     )
 
-    # Permiso explícito para enviar
     consent = st.checkbox(
         "Autorizo a enviar mi solicitud a la protectora para su evaluación",
         value=True
     )
 
-    # 👉 ESTE BOTÓN es imprescindible
     submit = st.form_submit_button("Enviar solicitud")
 
 # --------------------------------------
@@ -133,11 +133,14 @@ if submit:
     "genero": genero,
     "ubicacion": ubicacion,
     "tipo_vivienda": tipo_vivienda,
+    "vives_alquiler": vives_alquiler,
+    "permiso_mascotas": permiso_mascotas,
     "tiempo_libre": tiempo_libre,
     "redes_seguridad": redes_seguridad,
     "experiencia": experiencia,
     "destinatario_protectora": PROTECTORA_EMAIL,
     "origen": "AdoptAPP (Streamlit)"
+
 }
 
     st.markdown("### 📨 Resumen para la protectora")
