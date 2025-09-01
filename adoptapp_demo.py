@@ -30,9 +30,9 @@ def clasificar_adoptante(edad, tiempo_libre, redes_seguridad, experiencia, tipo_
     if tiempo_libre in ["3-5 horas", ">5 horas"]: puntos += 1
     if redes_seguridad == "Sí": puntos += 1
     if experiencia == "Alta":
-    puntos += 2
+       puntos += 2
     elif experiencia == "Media":
-    puntos += 1
+       puntos += 1
 # "Baja" suma 0
     if tipo_vivienda in ["Piso", "Ático", "Casa/Chalet", "Vivienda Compartida"]: puntos += 1
 
