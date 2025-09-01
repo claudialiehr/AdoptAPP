@@ -29,8 +29,12 @@ def clasificar_adoptante(edad, tiempo_libre, redes_seguridad, experiencia, tipo_
     if edad >= 22: puntos += 1
     if tiempo_libre in ["3-5 horas", ">5 horas"]: puntos += 1
     if redes_seguridad == "Sí": puntos += 1
-    if experiencia == "Sí": puntos += 1
-    if tipo_vivienda in ["Casa", "Ático", "Casa/Chalet"]: puntos += 1
+    if experiencia == "Alta":
+    puntos += 2
+elif experiencia == "Media":
+    puntos += 1
+# "Baja" suma 0
+    if tipo_vivienda in ["Piso", "Ático", "Casa/Chalet", "Vivienda Compartida"]: puntos += 1
 
     if puntos >= 4:
         return puntos, "APTO", "success"
@@ -68,19 +72,29 @@ with st.form("adoption_form"):
     nombre_animal = st.text_input("🐶 Nombre del animal que quieres adoptar")
 
     edad = st.slider("Edad", 18, 80, 30)
-    genero = st.selectbox("Género", ["Mujer", "Hombre", "Otro"])
+    genero = st.selectbox("Género", ["Mujer", "Hombre", "No me respresenta"])
     ubicacion = st.text_input("Ciudad / Provincia")
-    tipo_vivienda = st.selectbox("Tipo de vivienda", ["Piso", "Casa", "Vivienda compartida"])
+    tipo_vivienda = st.selectbox("Tipo de vivienda", ["Piso", "Casa", "Ático", "Vivienda compartida"])
+    vives_alquiler = st.radio("🏠 ¿Vives de alquiler?", ["Sí", "No"])
+
+permiso_mascotas = None
+if vives_alquiler == "Sí":
+    permiso_mascotas = st.radio(
+        "¿Tienes permiso para tener mascotas del/de la caser@?",
+        ["Sí", "No"]
+    )
     tiempo_libre = st.selectbox(
         "¿Cuánto tiempo tienes al día para el animal?",
-        ["<1 hora", "1-3 horas", "3-5 horas", ">5 horas"]
+        ["1-2 horas", "2-5 horas", ">5 horas"]
     )
     redes_seguridad = st.radio(
         "¿Estás dispuesto/a a instalar redes de seguridad en ventanas/balcones?",
-        ["Sí", "No", "No aplica (no tengo gatos)"]
+        ["Sí", "No", "No aplica"]
     )
-    experiencia = st.radio("¿Has tenido animales anteriormente?", ["Sí", "No"])
-
+    experiencia = st.selectbox(
+    "¿Cuál es tu experiencia con animales de compañía?",
+    ["Baja", "Media", "Alta"]
+)
     # Permiso explícito para enviar a la protectora
     consent = st.checkbox(
         "Autorizo a enviar mi solicitud a la protectora para su evaluación", value=True
