@@ -110,7 +110,6 @@ def enviar_resumen_por_webhook(payload: dict, webhook_url: str):
 # 1) FORMULARIO
 # =========================
 if pagina == "Formulario de adopción":
-
     with st.form("adoption_form"):
         # Datos básicos
         nombre = st.text_input("👤 Nombre completo del adoptante")
@@ -251,7 +250,7 @@ elif pagina == "Ley de Bienestar Animal":
 # -------------------------------
 # Página 5: Ley de Bienestar Animal
 # -------------------------------
-    elif pagina == "Ley de Bienestar Animal":
-         st.title("⚖️ Ley de Bienestar Animal")
-         st.markdown("Resumen de los puntos clave de la ley...")
-         st.markdown("[Consulta el texto completo en el BOE](https://www.boe.es)")
+elif pagina == "Ley de Bienestar Animal":
+     st.title("⚖️ Ley de Bienestar Animal")
+     st.markdown("Resumen de los puntos clave de la ley...")
+     st.markdown("[Consulta el texto completo en el BOE](https://www.boe.es)")
