@@ -216,32 +216,32 @@ with st.expander("ℹ️ Información sobre protección de datos (RGPD)"):
 # -------------------------------
 # Página 2: Animales en adopción
 # -------------------------------
-elif pagina == "Animales en adopción":
-    st.title("🐕 Animales en adopción")
-    st.info("Aquí podrías mostrar un listado con fotos y fichas de animales en adopción.")
-    st.image("https://place-puppy.com/300x300", caption="Luna - 2 años, Protectora A")
-    st.image("https://placekitten.com/300/300", caption="Michi - 1 año, Protectora B")
+    elif pagina == "Animales en adopción":
+         st.title("🐕 Animales en adopción")
+         st.info("Aquí podrías mostrar un listado con fotos y fichas de animales en adopción.")
+         st.image("https://place-puppy.com/300x300", caption="Luna - 2 años, Protectora A")
+         st.image("https://placekitten.com/300/300", caption="Michi - 1 año, Protectora B")
 
 # -------------------------------
 # Página 3: Tips de alimentación
 # -------------------------------
-elif pagina == "Tips de alimentación":
-    st.title("🍖 Tips de alimentación y cuidados")
-    st.markdown("- [Guía sobre piensos](https://example.com)")
-    st.markdown("- [Tiendas recomendadas](https://example.com)")
+    elif pagina == "Tips de alimentación":
+         st.title("🍖 Tips de alimentación y cuidados")
+         st.markdown("- [Guía sobre piensos](https://example.com)")
+         st.markdown("- [Tiendas recomendadas](https://example.com)")
 
 # -------------------------------
 # Página 4: Historias de adopción
 # -------------------------------
-elif pagina == "Historias de adopción":
-    st.title("📖 Historias de adopciones exitosas")
-    st.success("“Luna fue adoptada en 2023 y ahora vive feliz con su nueva familia.”")
-    st.image("https://place-puppy.com/400x300")
+    elif pagina == "Historias de adopción":
+         st.title("📖 Historias de adopciones exitosas")
+         st.success("“Luna fue adoptada en 2023 y ahora vive feliz con su nueva familia.”")
+         st.image("https://place-puppy.com/400x300")
 
 # -------------------------------
 # Página 5: Ley de Bienestar Animal
 # -------------------------------
-elif pagina == "Ley de Bienestar Animal":
-    st.title("⚖️ Ley de Bienestar Animal")
-    st.markdown("Resumen de los puntos clave de la ley...")
-    st.markdown("[Consulta el texto completo en el BOE](https://www.boe.es)")
+    elif pagina == "Ley de Bienestar Animal":
+         st.title("⚖️ Ley de Bienestar Animal")
+         st.markdown("Resumen de los puntos clave de la ley...")
+         st.markdown("[Consulta el texto completo en el BOE](https://www.boe.es)")
