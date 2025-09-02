@@ -5,12 +5,52 @@ import json
 # -------------------------------
 # Config básica (siempre lo primero)
 # -------------------------------
-st.set_page_config(page_title="AdoptAPP - ¡Adopta no compres!", layout="centered")
+st.set_page_config(page_title="AdoptAPP - ¡Adopta no compres!",
+                   layout="centered",
+                   initial_sidebar_state="collapsed")
+
+# 2) Inyecta CSS para que la sidebar sea un rail que se expande al hover
+st.markdown("""
+<style>
+/* Sidebar en modo rail estrecho */
+section[data-testid="stSidebar"] {
+  width: 64px !important;
+  min-width: 64px !important;
+  transition: width 0.25s ease-in-out;
+  overflow-x: hidden;
+  border-right: 1px solid #eee;
+}
+
+/* Al pasar el ratón, expandir */
+section[data-testid="stSidebar"]:hover {
+  width: 280px !important;
+  min-width: 280px !important;
+}
+
+/* Opcional: compactar el contenido interno cuando está colapsado */
+section[data-testid="stSidebar"] [data-testid="stSidebarNav"] {
+  padding-top: 0.5rem;
+}
+section[data-testid="stSidebar"] .block-container {
+  padding-top: 0.75rem;
+}
+
+/* Hacer que las etiquetas del radio no se corten al expandir */
+section[data-testid="stSidebar"] label {
+  white-space: nowrap;
+}
+
+/* Quitar un poco de padding al radio para que quepa bien en el rail */
+section[data-testid="stSidebar"] [role="radiogroup"] > div {
+  padding: .25rem .5rem;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # -------------------------------
 # Menú lateral
 # -------------------------------
-st.sidebar.title("Menú")
+st.sidebar.title("☰ Menú")  # el icono ☰ es el “hamburguesa”
 pagina = st.sidebar.radio(
     "Ir a:",
     [
@@ -19,7 +59,8 @@ pagina = st.sidebar.radio(
         "Tips de alimentación",
         "Historias de adopción",
         "Ley de Bienestar Animal"
-    ]
+    ],
+    index=0
 )
 
 # Secrets (en Cloud)
