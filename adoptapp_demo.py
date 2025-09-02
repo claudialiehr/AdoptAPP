@@ -1,6 +1,9 @@
 import streamlit as st
+import streamlit.components.v1 as components
 from datetime import datetime
 import json
+
+
 
 # -------------------------------
 # Config básica (siempre lo primero)
@@ -8,6 +11,39 @@ import json
 st.set_page_config(page_title="AdoptAPP - ¡Adopta no compres!",
                    layout="centered",
                    initial_sidebar_state="collapsed")
+
+menu_html = """
+<style>
+.menu-container { position: relative; display: inline-block; }
+.menu-button { font-size: 28px; cursor: pointer; user-select: none; }
+.menu-content { display: none; position: absolute; top: 40px; left: 0;
+  background: white; border: 1px solid #ddd; border-radius: 8px;
+  min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.15); z-index: 1000; }
+.menu-content a { display: block; padding: 10px; color: black; text-decoration: none; }
+.menu-content a:hover { background-color: #f0f0f0; }
+</style>
+<div class="menu-container">
+  <div class="menu-button" onclick="toggleMenu()">☰</div>
+  <div class="menu-content" id="menu">
+    <a href="#formulario">Formulario de adopción</a>
+    <a href="#animales">Animales en adopción</a>
+    <a href="#tips">Tips de alimentación</a>
+    <a href="#historias">Historias de adopción</a>
+    <a href="#ley">Ley de Bienestar Animal</a>
+  </div>
+</div>
+<script>
+function toggleMenu() {
+  var x = document.getElementById("menu");
+  if (x.style.display === "block") {
+    x.style.display = "none";
+  } else {
+    x.style.display = "block";
+  }
+}
+</script>
+"""
+components.html(menu_html, height=200)
 
 # 2) Inyecta CSS para que la sidebar sea un rail que se expande al hover
 st.markdown("""
@@ -46,22 +82,6 @@ section[data-testid="stSidebar"] [role="radiogroup"] > div {
 }
 </style>
 """, unsafe_allow_html=True)
-
-# -------------------------------
-# Menú lateral
-# -------------------------------
-st.sidebar.title("☰ Menú")  # el icono ☰ es el “hamburguesa”
-pagina = st.sidebar.radio(
-    "Ir a:",
-    [
-        "Formulario de adopción",
-        "Animales en adopción",
-        "Tips de alimentación",
-        "Historias de adopción",
-        "Ley de Bienestar Animal"
-    ],
-    index=0
-)
 
 # Secrets (en Cloud)
 WEBHOOK_URL = st.secrets.get("WEBHOOK_URL", None)
@@ -143,7 +163,8 @@ def enviar_resumen_por_webhook(payload: dict, webhook_url: str):
 # =========================
 # 1) FORMULARIO
 # =========================
-if pagina == "Formulario de adopción":
+st.markdown("<div id='formulario'></div>", unsafe_allow_html=True)
+st.header("Formulario de adopción")
     st.title("🐾 AdoptAPP")
     st.subheader("Cuestionario de preevaluación")
     st.markdown("Completa el formulario. Revisaremos tu solicitud a la mayor brevedad.")
@@ -254,7 +275,8 @@ if pagina == "Formulario de adopción":
 # =========================
 # 2) ANIMALES
 # =========================
-elif pagina == "Animales en adopción":
+st.markdown("<div id='animales'></div>", unsafe_allow_html=True)
+st.header("Animales en adopción")
     st.title("🐕 Animales en adopción")
     st.info("Aquí podrías mostrar un listado con fotos y fichas de animales en adopción.")
     st.image("https://place-puppy.com/300x300", caption="Luna - 2 años, Protectora A")
@@ -263,7 +285,8 @@ elif pagina == "Animales en adopción":
 # =========================
 # 3) TIPS
 # =========================
-elif pagina == "Tips de alimentación":
+st.markdown("<div id='tips'></div>", unsafe_allow_html=True)
+st.header("Tips de alimentación")
     st.title("🍖 Tips de alimentación y cuidados")
     st.markdown("- [Guía sobre piensos](https://example.com)")
     st.markdown("- [Tiendas recomendadas](https://example.com)")
@@ -271,7 +294,8 @@ elif pagina == "Tips de alimentación":
 # =========================
 # 4) HISTORIAS
 # =========================
-elif pagina == "Historias de adopción":
+st.markdown("<div id='historias'></div>", unsafe_allow_html=True)
+st.header("Historias de adopción")
     st.title("📖 Historias de adopciones exitosas")
     st.success("“Luna fue adoptada en 2023 y ahora vive feliz con su nueva familia.”")
     st.image("https://place-puppy.com/400x300")
@@ -279,15 +303,8 @@ elif pagina == "Historias de adopción":
 # =========================
 # 5) LEY
 # =========================
-elif pagina == "Ley de Bienestar Animal":
-    st.title("⚖️ Ley de Bienestar Animal")
+st.markdown("<div id='ley'></div>", unsafe_allow_html=True)
+st.header("Ley de Bienestar Animal")
     st.markdown("Resumen de los puntos clave de la ley...")
     st.markdown("[Consulta el texto completo en el BOE](https://www.boe.es)")
 
-# -------------------------------
-# Página 5: Ley de Bienestar Animal
-# -------------------------------
-elif pagina == "Ley de Bienestar Animal":
-     st.title("⚖️ Ley de Bienestar Animal")
-     st.markdown("Resumen de los puntos clave de la ley...")
-     st.markdown("[Consulta el texto completo en el BOE](https://www.boe.es)")
