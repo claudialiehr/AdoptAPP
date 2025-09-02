@@ -164,100 +164,99 @@ def enviar_resumen_por_webhook(payload: dict, webhook_url: str):
 # 1) FORMULARIO
 # =========================
 st.markdown("<div id='formulario'></div>", unsafe_allow_html=True)
-st.header("Formulario de adopción")
 st.title("🐾 AdoptAPP")
 st.subheader("Cuestionario de preevaluación")
 st.markdown("Completa el formulario. Revisaremos tu solicitud a la mayor brevedad.")
 
-    with st.form("adoption_form"):
-        # Datos básicos
-        nombre = st.text_input("👤 Nombre completo del adoptante")
-        telefono = st.text_input("📱 Teléfono de contacto (móvil)")
-        nombre_animal = st.text_input("🐶😺 Nombre del animal que quieres adoptar")
+with st.form("adoption_form"):
+    # Datos básicos
+    nombre = st.text_input("👤 Nombre completo del adoptante")
+    telefono = st.text_input("📱 Teléfono de contacto (móvil)")
+    nombre_animal = st.text_input("🐶😺 Nombre del animal que quieres adoptar")
 
-        # Perfil
-        edad = st.slider("Edad", 18, 80, 30)
-        genero = st.selectbox("Género", ["Mujer", "Hombre", "No me representa"])
-        ubicacion = st.text_input("Ciudad / Provincia")
-        tipo_vivienda = st.selectbox("Tipo de vivienda", ["Piso", "Casa", "Ático", "Vivienda Compartida"])
+    # Perfil
+    edad = st.slider("Edad", 18, 80, 30)
+    genero = st.selectbox("Género", ["Mujer", "Hombre", "No me representa"])
+    ubicacion = st.text_input("Ciudad / Provincia")
+    tipo_vivienda = st.selectbox("Tipo de vivienda", ["Piso", "Casa", "Ático", "Vivienda Compartida"])
 
-        # Alquiler/permiso (una sola pregunta)
-        permiso_mascotas = st.radio(
-            "🏠 ¿Vives de alquiler y tienes permiso para tener mascotas?",
-            ["Sí", "No", "No aplica (vivienda propia)"]
-        )
+    # Alquiler/permiso (una sola pregunta)
+    permiso_mascotas = st.radio(
+        "🏠 ¿Vives de alquiler y tienes permiso para tener mascotas?",
+        ["Sí", "No", "No aplica (vivienda propia)"]
+    )
 
-        # Tiempo disponible 
-        tiempo_libre = st.selectbox(
-            "¿Cuánto tiempo tienes al día para el animal?",
-            ["1-2 horas", "2-5 horas", ">5 horas"]
-        )
+    # Tiempo disponible 
+    tiempo_libre = st.selectbox(
+        "¿Cuánto tiempo tienes al día para el animal?",
+        ["1-2 horas", "2-5 horas", ">5 horas"]
+    )
 
-        # Seguridad y experiencia
-        redes_seguridad = st.radio(
-            "¿Estás dispuesto/a a instalar redes de seguridad en ventanas/balcones para el gato?",
-            ["Sí", "No", "No aplica"]
-        )
-        experiencia = st.selectbox(
-            "¿Cuál es tu experiencia con animales de compañía?",
-            ["Baja", "Media", "Alta"]
-        )
+    # Seguridad y experiencia
+    redes_seguridad = st.radio(
+        "¿Estás dispuesto/a a instalar redes de seguridad en ventanas/balcones para el gato?",
+        ["Sí", "No", "No aplica"]
+    )
+    experiencia = st.selectbox(
+        "¿Cuál es tu experiencia con animales de compañía?",
+        ["Baja", "Media", "Alta"]
+    )
 
-        # Consentimiento de envío a protectora
-        consent = st.checkbox(
-            "Autorizo a enviar mi solicitud a la protectora para su evaluación",
-            value=False
-        )
+    # Consentimiento de envío a protectora
+    consent = st.checkbox(
+        "Autorizo a enviar mi solicitud a la protectora para su evaluación",
+        value=False
+    )
 
-        # Botón de envío
-        submit = st.form_submit_button("Enviar solicitud")
+    # Botón de envío
+    submit = st.form_submit_button("Enviar solicitud")
 
-    # Resultado y envío
-    if submit:
-        puntos, etiqueta, color = clasificar_adoptante(
-            edad, tiempo_libre, redes_seguridad, experiencia, tipo_vivienda, permiso_mascotas
-        )
+# -------------------------------
+# Resultado y envío
+# -------------------------------
+if submit:
+    puntos, etiqueta, color = clasificar_adoptante(
+        edad, tiempo_libre, redes_seguridad, experiencia, tipo_vivienda, permiso_mascotas
+    )
 
-        st.markdown("### 🧠 Evaluación del sistema:")
-        if color == "success":
-            st.success("✅ Alta probabilidad de ser un adoptante responsable. Se recomienda avanzar con la entrevista.")
-        elif color == "warning":
-            st.warning("⚠️ Perfil intermedio. Requiere evaluación manual adicional.")
+    st.markdown("### 🧠 Evaluación del sistema:")
+    if color == "success":
+        st.success("✅ Alta probabilidad de ser un adoptante responsable. Se recomienda avanzar con la entrevista.")
+    elif color == "warning":
+        st.warning("⚠️ Perfil intermedio. Requiere evaluación manual adicional.")
+    else:
+        st.error("❌ Perfil con bajo encaje inicial. Se recomienda revisar motivaciones y condiciones.")
+
+    resumen = {
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "etiqueta": etiqueta,
+        "puntos": puntos,
+        "nombre": nombre,
+        "telefono": telefono,
+        "nombre_animal": nombre_animal,
+        "edad": edad,
+        "genero": genero,
+        "ubicacion": ubicacion,
+        "tipo_vivienda": tipo_vivienda,
+        "permiso_mascotas": permiso_mascotas,
+        "tiempo_libre": tiempo_libre,
+        "redes_seguridad": redes_seguridad,
+        "experiencia": experiencia,
+        "destinatario_protectora": PROTECTORA_EMAIL,
+        "origen": "AdoptAPP (Streamlit)"
+    }
+
+    if consent:
+        ok, msg = enviar_resumen_por_webhook(resumen, WEBHOOK_URL)
+        if ok:
+            st.success("✅ Tu solicitud se ha enviado correctamente a la protectora.")
         else:
-            st.error("❌ Perfil con bajo encaje inicial. Se recomienda revisar motivaciones y condiciones.")
+            st.error("⚠️ No se pudo enviar automáticamente. Por favor, inténtalo de nuevo más tarde.")
+    else:
+        st.info("ℹ️ No se enviará la solicitud porque no diste consentimiento.")
 
-        # Payload (no se muestra al usuario)
-        resumen = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
-            "etiqueta": etiqueta,
-            "puntos": puntos,
-            "nombre": nombre,
-            "telefono": telefono,
-            "nombre_animal": nombre_animal,
-            "edad": edad,
-            "genero": genero,
-            "ubicacion": ubicacion,
-            "tipo_vivienda": tipo_vivienda,
-            "permiso_mascotas": permiso_mascotas,
-            "tiempo_libre": tiempo_libre,
-            "redes_seguridad": redes_seguridad,
-            "experiencia": experiencia,
-            "destinatario_protectora": PROTECTORA_EMAIL,
-            "origen": "AdoptAPP (Streamlit)"
-        }
-
-        # Envío silencioso (solo confirmación/errores)
-        if consent:
-            ok, msg = enviar_resumen_por_webhook(resumen, WEBHOOK_URL)
-            if ok:
-                st.success("✅ Tu solicitud se ha enviado correctamente a la protectora.")
-            else:
-                st.error("⚠️ No se pudo enviar automáticamente. Por favor, inténtalo de nuevo más tarde.")
-        else:
-            st.info("ℹ️ No se enviará la solicitud porque no diste consentimiento.")
-
-        st.markdown("---")
-        st.markdown("📝 **Nota:** Esta evaluación es preliminar y no sustituye el criterio del personal de la protectora.")
+    st.markdown("---")
+    st.markdown("📝 **Nota:** Esta evaluación es preliminar y no sustituye el criterio del personal de la protectora.")
 
     # RGPD (se muestra en la página del formulario)
     st.caption("Al enviar, confirmas que la información facilitada es veraz. El envío a la protectora solo se realizará si otorgas tu consentimiento.")
@@ -277,11 +276,10 @@ st.markdown("Completa el formulario. Revisaremos tu solicitud a la mayor breveda
 # 2) ANIMALES
 # =========================
 st.markdown("<div id='animales'></div>", unsafe_allow_html=True)
-st.header("Animales en adopción")
 st.title("🐕 Animales en adopción")
-st.info("Aquí podrías mostrar un listado con fotos y fichas de animales en adopción.")
-st.image("https://place-puppy.com/300x300", caption="Luna - 2 años, Protectora A")
-st.image("https://placekitten.com/300/300", caption="Michi - 1 año, Protectora B")
+st.info("Aquí puedes ver algunos animales en adopción de distintas protectoras.")
+st.image("https://place-puppy.com/300x300", caption="Luna – 2 años, Protectora A")
+st.image("https://placekitten.com/300/300", caption="Michi – 1 año, Protectora B")
 
 # =========================
 # 3) TIPS
