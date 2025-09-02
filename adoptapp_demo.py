@@ -22,13 +22,6 @@ pagina = st.sidebar.radio(
     ]
 )
 
-# -------------------------------
-# Encabezado global
-# -------------------------------
-st.title("🐾 AdoptAPP")
-st.subheader("Cuestionario de preevaluación")
-st.markdown("Completa el formulario. Revisaremos tu solicitud a la mayor brevedad.")
-
 # Secrets (en Cloud)
 WEBHOOK_URL = st.secrets.get("WEBHOOK_URL", None)
 PROTECTORA_EMAIL = st.secrets.get("PROTECTORA_EMAIL", None)  # opcional
@@ -110,6 +103,9 @@ def enviar_resumen_por_webhook(payload: dict, webhook_url: str):
 # 1) FORMULARIO
 # =========================
 if pagina == "Formulario de adopción":
+    st.title("🐾 AdoptAPP")
+    st.subheader("Cuestionario de preevaluación")
+    st.markdown("Completa el formulario. Revisaremos tu solicitud a la mayor brevedad.")
     with st.form("adoption_form"):
         # Datos básicos
         nombre = st.text_input("👤 Nombre completo del adoptante")
