@@ -165,9 +165,10 @@ def enviar_resumen_por_webhook(payload: dict, webhook_url: str):
 # =========================
 st.markdown("<div id='formulario'></div>", unsafe_allow_html=True)
 st.header("Formulario de adopción")
-    st.title("🐾 AdoptAPP")
-    st.subheader("Cuestionario de preevaluación")
-    st.markdown("Completa el formulario. Revisaremos tu solicitud a la mayor brevedad.")
+st.title("🐾 AdoptAPP")
+st.subheader("Cuestionario de preevaluación")
+st.markdown("Completa el formulario. Revisaremos tu solicitud a la mayor brevedad.")
+
     with st.form("adoption_form"):
         # Datos básicos
         nombre = st.text_input("👤 Nombre completo del adoptante")
@@ -277,34 +278,34 @@ st.header("Formulario de adopción")
 # =========================
 st.markdown("<div id='animales'></div>", unsafe_allow_html=True)
 st.header("Animales en adopción")
-    st.title("🐕 Animales en adopción")
-    st.info("Aquí podrías mostrar un listado con fotos y fichas de animales en adopción.")
-    st.image("https://place-puppy.com/300x300", caption="Luna - 2 años, Protectora A")
-    st.image("https://placekitten.com/300/300", caption="Michi - 1 año, Protectora B")
+st.title("🐕 Animales en adopción")
+st.info("Aquí podrías mostrar un listado con fotos y fichas de animales en adopción.")
+st.image("https://place-puppy.com/300x300", caption="Luna - 2 años, Protectora A")
+st.image("https://placekitten.com/300/300", caption="Michi - 1 año, Protectora B")
 
 # =========================
 # 3) TIPS
 # =========================
 st.markdown("<div id='tips'></div>", unsafe_allow_html=True)
 st.header("Tips de alimentación")
-    st.title("🍖 Tips de alimentación y cuidados")
-    st.markdown("- [Guía sobre piensos](https://example.com)")
-    st.markdown("- [Tiendas recomendadas](https://example.com)")
+st.title("🍖 Tips de alimentación y cuidados")
+st.markdown("- [Guía sobre piensos](https://example.com)")
+st.markdown("- [Tiendas recomendadas](https://example.com)")
 
 # =========================
 # 4) HISTORIAS
 # =========================
 st.markdown("<div id='historias'></div>", unsafe_allow_html=True)
 st.header("Historias de adopción")
-    st.title("📖 Historias de adopciones exitosas")
-    st.success("“Luna fue adoptada en 2023 y ahora vive feliz con su nueva familia.”")
-    st.image("https://place-puppy.com/400x300")
+st.title("📖 Historias de adopciones exitosas")
+st.success("“Luna fue adoptada en 2023 y ahora vive feliz con su nueva familia.”")
+st.image("https://place-puppy.com/400x300")
 
 # =========================
 # 5) LEY
 # =========================
 st.markdown("<div id='ley'></div>", unsafe_allow_html=True)
 st.header("Ley de Bienestar Animal")
-    st.markdown("Resumen de los puntos clave de la ley...")
-    st.markdown("[Consulta el texto completo en el BOE](https://www.boe.es)")
+st.markdown("Resumen de los puntos clave de la ley...")
+st.markdown("[Consulta el texto completo en el BOE](https://www.boe.es)")
 
