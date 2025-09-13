@@ -144,14 +144,6 @@ if pagina == "Formulario de adopción":
             edad, tiempo_libre, redes_seguridad, experiencia, tipo_vivienda, permiso_mascotas
         )
 
-        st.markdown("### 🧠 Evaluación del sistema:")
-        if color == "success":
-            st.success("✅ Alta probabilidad de ser un adoptante responsable.")
-        elif color == "warning":
-            st.warning("⚠️ Perfil intermedio. Requiere evaluación manual.")
-        else:
-            st.error("❌ Perfil con bajo encaje inicial.")
-
         resumen = {
             "timestamp": datetime.utcnow().isoformat() + "Z",
             "etiqueta": etiqueta,
